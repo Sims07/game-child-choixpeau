@@ -317,10 +317,10 @@ async function showFinalResults() {
     if (grouped[res.house]) grouped[res.house].push(res.name);
   });
 
-  // Affichage des cartes de maisons avec leur blason
+  // Affichage des cartes avec les grands emblèmes
   $("results").innerHTML = Object.entries(grouped).map(([houseKey, students]) => `
     <div class="house-card">
-      <img src="${houses[houseKey].icon}" alt="${houses[houseKey].name}" class="house-badge">
+      <img src="${houses[houseKey].icon}" alt="${houses[houseKey].name}" class="house-badge-large">
       <h3>${houses[houseKey].name}</h3>
       <p>${students.length ? students.map(n => n.replace(/[<>&"]/g, "")).join(", ") : "—"}</p>
     </div>
