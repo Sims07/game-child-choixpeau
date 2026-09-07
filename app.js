@@ -2,10 +2,10 @@
    DONNÉES DU JEU
    ========================================================================== */
 const houses = {
-  gryffondor: { name: "GRYFFONDOR", icon: "img/gryffondor.png" },
-  serdaigle: { name: "SERDAIGLE", icon: "img/serdaigle.png" },
-  poufsouffle: { name: "POUFSOUFFLE", icon: "img/poufsouffle.png" },
-  serpentard: { name: "SERPENTARD", icon: "img/serpentard.png" }
+  gryffondor: { name: "GRYFFONDOR", icon: "img/gryffondor.jpg" },
+  serdaigle: { name: "SERDAIGLE", icon: "img/serdaigle.jpg" },
+  poufsouffle: { name: "POUFSOUFFLE", icon: "img/poufsouffle.jpg" },
+  serpentard: { name: "SERPENTARD", icon: "img/serpentard.jpg" }
 };
 
 const questions = [
