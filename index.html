@@ -1,0 +1,62 @@
+<!doctype html>
+<html lang="fr">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width,initial-scale=1">
+  <title>Le Choixpeau magique</title>
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <main id="app">
+    <!-- ACCUEIL -->
+    <section id="welcome" class="screen active">
+      <div class="stars"></div>
+      <img src="img/choixpeau.png" alt="Le Choixpeau Magique" class="hat-img">
+      <p class="eyebrow">BIENVENUE À POUDLARD</p>
+      <h1>La cérémonie du<br><span>Choixpeau magique</span></h1>
+      <p class="subtitle">Le Choixpeau vous attend…</p>
+      <button id="startBtn" class="magic-btn">Commencer la cérémonie</button>
+      <p class="hint">🔊 Le premier clic active la voix magique</p>
+    </section>
+
+    <!-- SAISIE PRÉNOM -->
+    <section id="name" class="screen">
+      <img src="img/choixpeau.png" alt="Le Choixpeau Magique" class="hat-img small-hat">
+      <p class="eyebrow">APPROCHE, JEUNE SORCIER</p>
+      <h2>Comment t'appelles-tu ?</h2>
+      <input id="nameInput" autocomplete="off" maxlength="24" placeholder="Ton prénom">
+      <button id="nameBtn" class="magic-btn">Entrer dans la Grande Salle</button>
+    </section>
+
+    <!-- QUESTIONS -->
+    <section id="question" class="screen">
+      <div class="topbar"><span id="studentName"></span><span id="progress"></span></div>
+      <img src="img/choixpeau.png" alt="Le Choixpeau Magique" id="hat" class="hat-img thinking">
+      <p id="hatText" class="hat-text"></p>
+      <h2 id="questionText"></h2>
+      <div id="answers" class="answers"></div>
+    </section>
+
+    <!-- RÉVÉLATION -->
+    <section id="reveal" class="screen">
+      <div class="reveal-glow"></div>
+      <img src="img/choixpeau.png" alt="Le Choixpeau Magique" class="hat-img huge-hat">
+      <p id="revealIntro" class="eyebrow">LE CHOIX EST FAIT…</p>
+      <h2 id="revealText"></h2>
+      <div id="houseReveal" class="house-reveal"></div>
+      <button id="nextBtn" class="magic-btn">Continuer la cérémonie</button>
+    </section>
+
+    <!-- RÉSULTAT FINAL -->
+    <section id="final" class="screen">
+      <p class="eyebrow">LA CÉRÉMONIE EST TERMINÉE</p>
+      <h2>Les maisons de Poudlard</h2>
+      <div id="results" class="results"></div>
+      <button id="restartBtn" class="magic-btn">Nouvelle cérémonie</button>
+    </section>
+  </main>
+
+  <button id="soundBtn" class="sound-btn" title="Activer/désactiver la voix">🔊</button>
+  <script src="app.js"></script>
+</body>
+</html>
