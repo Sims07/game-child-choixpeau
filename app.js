@@ -2,10 +2,10 @@
    DONNÉES DU JEU
    ========================================================================== */
 const houses = {
-  gryffondor: { name: "GRYFFONDOR", icon: "🦁" },
-  serdaigle: { name: "SERDAIGLE", icon: "🦅" },
-  poufsouffle: { name: "POUFSOUFFLE", icon: "🦡" },
-  serpentard: { name: "SERPENTARD", icon: "🐍" }
+  gryffondor: { name: "GRYFFONDOR", icon: "img/gryffondor.png" },
+  serdaigle: { name: "SERDAIGLE", icon: "img/serdaigle.png" },
+  poufsouffle: { name: "POUFSOUFFLE", icon: "img/poufsouffle.png" },
+  serpentard: { name: "SERPENTARD", icon: "img/serpentard.png" }
 };
 
 const questions = [
@@ -270,7 +270,11 @@ async function showReveal() {
 
   state.results.push({ name: state.name, house: winningHouse });
 
-  $("revealText").textContent = `${houses[winningHouse].icon} ${houses[winningHouse].name} !`;
+  // Utilisation d'une balise <img> pour le résultat
+  $("revealText").innerHTML = `
+    <img src="${houses[winningHouse].icon}" alt="${houses[winningHouse].name}" class="house-badge-huge">
+    <span>${houses[winningHouse].name} !</span>
+  `;
   $("houseReveal").textContent = "Le Choixpeau a parlé.";
   showScreen("reveal");
 
@@ -313,9 +317,10 @@ async function showFinalResults() {
     if (grouped[res.house]) grouped[res.house].push(res.name);
   });
 
+  // Affichage des cartes de maisons avec leur blason
   $("results").innerHTML = Object.entries(grouped).map(([houseKey, students]) => `
     <div class="house-card">
-      <div class="symbol">${houses[houseKey].icon}</div>
+      <img src="${houses[houseKey].icon}" alt="${houses[houseKey].name}" class="house-badge">
       <h3>${houses[houseKey].name}</h3>
       <p>${students.length ? students.map(n => n.replace(/[<>&"]/g, "")).join(", ") : "—"}</p>
     </div>
