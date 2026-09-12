@@ -2,10 +2,10 @@
    DONNÉES DU JEU
    ========================================================================== */
 const houses = {
-  gryffondor: { name: "GRYFFONDOR", icon: "img/gryffondor.jpg" },
-  serdaigle: { name: "SERDAIGLE", icon: "img/serdaigle.jpg" },
-  poufsouffle: { name: "POUFSOUFFLE", icon: "img/poufsouffle.jpg" },
-  serpentard: { name: "SERPENTARD", icon: "img/serpentard.jpg" }
+  gryffondor: { name: "GRYFFONDOR", icon: "img/gryffondor.jpg", color: "#e2a13d", printColor: "#9c3b23", tagline: "Bravoure, courage et un cœur de lion." },
+  serdaigle: { name: "SERDAIGLE", icon: "img/serdaigle.jpg", color: "#7ea8d8", printColor: "#2a5d94", tagline: "Sagesse, esprit vif et soif de savoir." },
+  poufsouffle: { name: "POUFSOUFFLE", icon: "img/poufsouffle.jpg", color: "#f0d264", printColor: "#8a6d0f", tagline: "Loyauté, patience et un grand cœur." },
+  serpentard: { name: "SERPENTARD", icon: "img/serpentard.jpg", color: "#5fae7c", printColor: "#1f6b3f", tagline: "Ambition, ruse et détermination." }
 };
 
 const questions = [
@@ -16,7 +16,8 @@ const questions = [
       ["Je cherche d'abord des indices et des livres.", "serdaigle"],
       ["Je vais chercher un ami pour explorer ensemble.", "poufsouffle"],
       ["J'observe discrètement avant de décider.", "serpentard"]
-    ]
+    ],
+    "questions/q01-porte-mysterieuse.mp3"
   ],
   [
     "Un camarade est mis à l'écart pendant un jeu. Tu…",
@@ -25,7 +26,8 @@ const questions = [
       ["Je cherche une solution juste et intelligente.", "serdaigle"],
       ["Je l'invite à rejoindre notre équipe.", "poufsouffle"],
       ["Je trouve la meilleure façon de retourner la situation.", "serpentard"]
-    ]
+    ],
+    "questions/q02-camarade-ecarte.mp3"
   ],
   [
     "Quel objet magique choisirais-tu ?",
@@ -34,7 +36,8 @@ const questions = [
       ["Un livre qui répond à toutes les questions.", "serdaigle"],
       ["Une cape qui rend tout le monde heureux.", "poufsouffle"],
       ["Une bague donnant un grand pouvoir.", "serpentard"]
-    ]
+    ],
+    "questions/q03-objet-magique.mp3"
   ],
   [
     "Pour réussir un défi difficile, tu comptes surtout sur…",
@@ -43,7 +46,8 @@ const questions = [
       ["Ton intelligence.", "serdaigle"],
       ["Tes amis et ta persévérance.", "poufsouffle"],
       ["Ta détermination et ta stratégie.", "serpentard"]
-    ]
+    ],
+    "questions/q04-defi-difficile.mp3"
   ],
   [
     "Le Choixpeau hésite entre deux maisons. Que lui dis-tu ?",
@@ -52,8 +56,61 @@ const questions = [
       ["Prends celle qui correspond le mieux à ma façon de penser.", "serdaigle"],
       ["Je veux une maison où l'on prend soin les uns des autres.", "poufsouffle"],
       ["Je veux une maison qui me permettra d'aller loin.", "serpentard"]
-    ]
+    ],
+    "questions/q05-choixpeau-hesite.mp3"
+  ],
+  [
+    "Une créature magique est blessée dans la forêt interdite. Tu…",
+    [
+      ["Je fonce l'aider, tant pis pour le danger.", "gryffondor"],
+      ["J'observe ses blessures pour comprendre comment la soigner.", "serdaigle"],
+      ["Je reste avec elle pour qu'elle ne soit pas seule.", "poufsouffle"],
+      ["Je vois ce que je peux en tirer avant d'agir.", "serpentard"]
+    ],
+    "questions/q06-creature-blessee.mp3"
+  ],
+  [
+    "Ton plat préféré à la Grande Salle ressemble à…",
+    [
+      ["Un plat copieux, digne d'un grand banquet.", "gryffondor"],
+      ["Quelque chose de raffiné et original.", "serdaigle"],
+      ["Un plat réconfortant, comme à la maison.", "poufsouffle"],
+      ["Le plat le plus impressionnant de la table.", "serpentard"]
+    ],
+    "questions/q07-plat-prefere.mp3"
+  ],
+  [
+    "Un professeur te propose un projet en plus des cours. Tu…",
+    [
+      ["Je fonce, même si c'est risqué.", "gryffondor"],
+      ["J'accepte si ça me permet d'apprendre quelque chose de nouveau.", "serdaigle"],
+      ["J'accepte si je peux le faire avec des amis.", "poufsouffle"],
+      ["J'accepte si ça peut m'aider à me démarquer.", "serpentard"]
+    ],
+    "questions/q08-projet-professeur.mp3"
+  ],
+  [
+    "Quelle qualité admires-tu le plus chez un sorcier ?",
+    [
+      ["Le courage face au danger.", "gryffondor"],
+      ["La soif de savoir.", "serdaigle"],
+      ["La fidélité envers les siens.", "poufsouffle"],
+      ["L'ambition et la détermination.", "serpentard"]
+    ],
+    "questions/q09-qualite-admiree.mp3"
   ]
+];
+
+// Question finale : le souhait de l'élève, toujours respecté par le Choixpeau
+const wishQuestion = [
+  "Le Choixpeau te laisse le choix. Dans quelle maison aimerais-tu aller ?",
+  [
+    ["Gryffondor, pour vivre de grandes aventures !", "gryffondor"],
+    ["Serdaigle, pour nourrir ma curiosité.", "serdaigle"],
+    ["Poufsouffle, pour la loyauté et l'amitié.", "poufsouffle"],
+    ["Serpentard, pour accomplir de grandes choses.", "serpentard"]
+  ],
+  "questions/q10-voeu.mp3"
 ];
 
 const audioFiles = {
@@ -155,18 +212,137 @@ const $ = id => document.getElementById(id);
 
 let state = {
   name: "",
+  gender: null,            // "sorcier" ou "sorciere", choisi avant la cérémonie
   questionIndex: 0,
   score: { gryffondor: 0, serdaigle: 0, poufsouffle: 0, serpentard: 0 },
   results: [],
   availableReactions: [],
-  availableThinking: []
+  selectedQuestions: [],   // les 2 questions tirées au hasard pour cette session
+  wishHouse: null          // la maison souhaitée par l'élève (question finale, décisive)
 };
+
+// Retourne le chemin de l'illustration du personnage pour un genre + une maison donnés
+function getCharacterImage(gender, houseKey) {
+  const g = gender === "sorciere" ? "sorciere" : "sorcier";
+  return `img/${g}-${houseKey}-legami.png`;
+}
 
 // Tire un élément aléatoire et le retire du tableau pour ne jamais le répéter
 function pullUniqueRandom(array) {
   if (!array || array.length === 0) return null;
   const index = Math.floor(Math.random() * array.length);
   return array.splice(index, 1)[0];
+}
+
+// Tire `count` questions distinctes au hasard dans le pool, sans le modifier
+function pickRandomQuestions(pool, count) {
+  const indices = pool.map((_, i) => i);
+  const picked = [];
+  for (let i = 0; i < count && indices.length; i++) {
+    const rand = Math.floor(Math.random() * indices.length);
+    picked.push(pool[indices[rand]]);
+    indices.splice(rand, 1);
+  }
+  return picked;
+}
+
+// Modale de confirmation stylée (remplace confirm() natif du navigateur)
+function showConfirmModal(text) {
+  return new Promise(resolve => {
+    $("modalText").textContent = text;
+    $("confirmModal").classList.remove("hidden");
+
+    const cleanup = (result) => {
+      $("confirmModal").classList.add("hidden");
+      $("modalYesBtn").onclick = null;
+      $("modalNoBtn").onclick = null;
+      resolve(result);
+    };
+
+    $("modalYesBtn").onclick = () => cleanup(true);
+    $("modalNoBtn").onclick = () => cleanup(false);
+  });
+}
+
+// Regroupe les résultats enregistrés par maison
+function groupResultsByHouse() {
+  const grouped = { gryffondor: [], serdaigle: [], poufsouffle: [], serpentard: [] };
+  state.results.forEach(res => {
+    if (grouped[res.house]) grouped[res.house].push(res);
+  });
+  return grouped;
+}
+
+// Génère le HTML des cartes de maisons (réutilisé par l'écran final et la modale de détail)
+function renderHouseCardsHTML(badgeClass) {
+  const grouped = groupResultsByHouse();
+  return Object.entries(grouped).map(([houseKey, students]) => {
+    const house = houses[houseKey];
+    const studentsHTML = students.length
+      ? `<div class="student-chips">${students.map(s => `
+          <span class="student-chip">
+            <img src="${getCharacterImage(s.gender, houseKey)}" alt="" class="student-chip-avatar">
+            ${s.name.replace(/[<>&"]/g, "")}
+          </span>
+        `).join("")}</div>`
+      : `<p>—</p>`;
+    return `
+      <div class="house-card">
+        <img src="${house.icon}" alt="${house.name}" class="${badgeClass}">
+        <h3>${house.name}</h3>
+        ${studentsHTML}
+      </div>
+    `;
+  }).join("");
+}
+
+// Met à jour le badge de compteur en direct des maisons
+function updateLiveCounter() {
+  const grouped = groupResultsByHouse();
+  $("countGryffondor").textContent = grouped.gryffondor.length;
+  $("countSerdaigle").textContent = grouped.serdaigle.length;
+  $("countPoufsouffle").textContent = grouped.poufsouffle.length;
+  $("countSerpentard").textContent = grouped.serpentard.length;
+  $("liveCounter").classList.toggle("hidden", state.results.length === 0);
+}
+
+// Ouvre / ferme la modale de détail de la répartition en cours
+function openLiveDetails() {
+  if (state.results.length === 0) return;
+  $("liveDetailsGrid").innerHTML = renderHouseCardsHTML("house-badge-large");
+  $("liveDetailsModal").classList.remove("hidden");
+}
+$("liveCounter").addEventListener("click", openLiveDetails);
+$("liveCounter").addEventListener("keydown", e => {
+  if (e.key === "Enter" || e.key === " ") { e.preventDefault(); openLiveDetails(); }
+});
+$("liveDetailsCloseBtn").onclick = () => $("liveDetailsModal").classList.add("hidden");
+
+// Déclenche une pluie de confettis aux couleurs de la maison révélée
+function launchConfetti(color) {
+  const container = $("confettiContainer");
+  if (!container) return;
+  container.innerHTML = "";
+
+  const palette = [color, "#f6df9b", "#ffffff"];
+  const pieceCount = 46;
+
+  for (let i = 0; i < pieceCount; i++) {
+    const piece = document.createElement("span");
+    piece.className = "confetti-piece";
+    const size = 6 + Math.random() * 6;
+    piece.style.width = `${size}px`;
+    piece.style.height = `${size * 1.6}px`;
+    piece.style.left = `${Math.random() * 100}%`;
+    piece.style.background = palette[Math.floor(Math.random() * palette.length)];
+    piece.style.animationDuration = `${1.8 + Math.random() * 1.4}s`;
+    piece.style.animationDelay = `${Math.random() * 0.4}s`;
+    piece.style.transform = `rotate(${Math.random() * 360}deg)`;
+    container.appendChild(piece);
+  }
+
+  // Nettoyage après l'animation pour ne pas accumuler d'éléments en mémoire
+  setTimeout(() => { container.innerHTML = ""; }, 3600);
 }
 
 function showScreen(screenId) {
@@ -190,16 +366,17 @@ $("startBtn").onclick = async () => {
 // 2. Validation du nom
 $("nameBtn").onclick = async () => {
   const inputName = $("nameInput").value.trim();
-  if (!inputName) return;
+  if (!inputName || !state.gender) return;
 
   audio.stop();
   state.name = inputName;
   state.questionIndex = 0;
   state.score = { gryffondor: 0, serdaigle: 0, poufsouffle: 0, serpentard: 0 };
+  state.wishHouse = null;
+  state.selectedQuestions = pickRandomQuestions(questions, 2);
 
   // Copie indépendante des listes audio pour tirage sans remise pendant la session
   state.availableReactions = [...audioFiles.reaction];
-  state.availableThinking = [...audioFiles.thinking];
 
   await audio.playSequence(audioFiles.name, 500);
   startQuestion();
@@ -209,12 +386,23 @@ $("nameInput").addEventListener("keydown", e => {
   if (e.key === "Enter") $("nameBtn").click();
 });
 
+document.querySelectorAll(".gender-btn").forEach(btn => {
+  btn.onclick = () => {
+    state.gender = btn.dataset.gender;
+    document.querySelectorAll(".gender-btn").forEach(b => b.classList.remove("selected"));
+    btn.classList.add("selected");
+  };
+});
+
 // 3. Affichage d'une question
 function startQuestion() {
-  const q = questions[state.questionIndex];
+  const totalSteps = state.selectedQuestions.length + 1; // +1 pour la question de vœu
+  const q = state.questionIndex < state.selectedQuestions.length
+    ? state.selectedQuestions[state.questionIndex]
+    : wishQuestion;
 
   $("studentName").textContent = state.name;
-  $("progress").textContent = `QUESTION ${state.questionIndex + 1} / ${questions.length}`;
+  $("progress").textContent = `QUESTION ${state.questionIndex + 1} / ${totalSteps}`;
   $("questionText").textContent = q[0];
   $("hatText").textContent = "Le Choixpeau réfléchit…";
   $("answers").innerHTML = "";
@@ -223,26 +411,37 @@ function startQuestion() {
     const btn = document.createElement("button");
     btn.className = "answer";
     btn.textContent = text;
-    btn.onclick = () => handleAnswer(houseKey);
+    btn.onclick = (e) => handleAnswer(houseKey, e.currentTarget);
     $("answers").appendChild(btn);
   });
 
   showScreen("question");
 
-  // Son de réflexion unique par question
-  const thinkingSound = pullUniqueRandom(state.availableThinking);
-  if (thinkingSound) {
-    audio.playSequence([thinkingSound]);
-  }
+  // Lecture de la question par la voix. Si le fichier audio n'existe pas encore,
+  // la séquence continue normalement (voir SoundEngine.playFile) : rien ne bloque le jeu.
+  audio.playSequence([q[2]].filter(Boolean));
 }
 
 // 4. Traitement d'une réponse
-async function handleAnswer(houseKey) {
+async function handleAnswer(houseKey, btnEl) {
   audio.stop();
 
-  document.querySelectorAll(".answer").forEach(b => b.disabled = true);
+  document.querySelectorAll(".answer").forEach(b => {
+    b.disabled = true;
+    b.classList.add("answer-disabled");
+  });
+  if (btnEl) btnEl.classList.add("answer-selected");
 
-  state.score[houseKey]++;
+  const totalSteps = state.selectedQuestions.length + 1;
+  const isWishQuestion = state.questionIndex >= state.selectedQuestions.length;
+
+  if (isWishQuestion) {
+    // La question de vœu ne compte pas dans le score : elle décide directement
+    state.wishHouse = houseKey;
+  } else {
+    state.score[houseKey]++;
+  }
+
   $("hatText").textContent = "Hmmm… le Choixpeau prend note…";
 
   // Réaction unique tirée sans remise
@@ -251,7 +450,7 @@ async function handleAnswer(houseKey) {
     await audio.playSequence([reactionSound], 400);
   }
 
-  if (state.questionIndex < questions.length - 1) {
+  if (state.questionIndex < totalSteps - 1) {
     state.questionIndex++;
     startQuestion();
   } else {
@@ -263,30 +462,47 @@ async function handleAnswer(houseKey) {
 async function showReveal() {
   audio.stop();
 
-  const maxScore = Math.max(...Object.values(state.score));
-  const candidates = Object.keys(state.score).filter(k => state.score[k] === maxScore);
-  const nameHash = [...state.name].reduce((acc, char) => acc + char.charCodeAt(0), 0);
-  const winningHouse = candidates[Math.abs(nameHash) % candidates.length];
+  // Le vœu exprimé par l'élève est toujours respecté (comme dans les livres,
+  // le Choixpeau tient compte du souhait). Le score des 2 premières questions
+  // ne sert que de filet de sécurité si jamais aucun vœu n'a été enregistré.
+  const winningHouse = state.wishHouse || (() => {
+    const maxScore = Math.max(...Object.values(state.score));
+    const candidates = Object.keys(state.score).filter(k => state.score[k] === maxScore);
+    return candidates[Math.floor(Math.random() * candidates.length)];
+  })();
 
-  state.results.push({ name: state.name, house: winningHouse });
+  state.results.push({ name: state.name, house: winningHouse, gender: state.gender });
+  updateLiveCounter();
 
-  // Utilisation d'une balise <img> pour le résultat
-  $("revealText").innerHTML = `
-    <img src="${houses[winningHouse].icon}" alt="${houses[winningHouse].name}" class="house-badge-huge">
-    <span>${houses[winningHouse].name} !</span>
-  `;
-  $("houseReveal").textContent = "Le Choixpeau a parlé.";
+  // Rien n'est encore révélé : on garde le suspense tant que le Choixpeau n'a pas "parlé"
+  $("revealText").textContent = "Le Choixpeau a parlé.";
+  $("houseReveal").innerHTML = "";
   showScreen("reveal");
 
+  // Suspense sonore avant toute révélation visuelle
   await audio.playSequence(audioFiles.reveal, 600);
+
+  // Révélation visuelle, synchronisée avec l'annonce vocale de la maison :
+  // c'est ici que doit apparaître la mise en avant spectaculaire
+  const house = houses[winningHouse];
+  const characterSrc = getCharacterImage(state.gender, winningHouse);
+  $("houseReveal").innerHTML = `
+    <div class="reveal-visuals">
+      <img src="${characterSrc}" alt="${house.name}" class="reveal-character">
+      <img src="${house.icon}" alt="${house.name}" class="house-badge-huge">
+    </div>
+    <span style="color:${house.color};text-shadow:0 0 40px ${house.color}66">${house.name} !</span>
+  `;
+  launchConfetti(house.color);
+
   await audio.playSequence([audioFiles.houses[winningHouse]], 800);
   await audio.playSequence([audioFiles.after], 0);
 }
 
 // 6. Continuer ou Finir
-$("nextBtn").onclick = () => {
+$("nextBtn").onclick = async () => {
   audio.stop();
-  const choice = confirm("Un autre sorcier veut-il passer sous le Choixpeau ?\n\nOK = Oui, suivant\nAnnuler = Voir la cérémonie finale");
+  const choice = await showConfirmModal("Un autre sorcier veut-il passer sous le Choixpeau ?");
 
   if (choice) {
     resetForNextStudent();
@@ -297,11 +513,14 @@ $("nextBtn").onclick = () => {
 
 function resetForNextStudent() {
   state.name = "";
+  state.gender = null;
   state.questionIndex = 0;
   state.score = { gryffondor: 0, serdaigle: 0, poufsouffle: 0, serpentard: 0 };
+  state.wishHouse = null;
+  state.selectedQuestions = [];
   state.availableReactions = [];
-  state.availableThinking = [];
   $("nameInput").value = "";
+  document.querySelectorAll(".gender-btn").forEach(b => b.classList.remove("selected"));
   showScreen("name");
   setTimeout(() => $("nameInput").focus(), 150);
 
@@ -311,20 +530,9 @@ function resetForNextStudent() {
 // 7. Écran Final
 async function showFinalResults() {
   audio.stop();
+  $("liveCounter").classList.add("hidden");
 
-  const grouped = { gryffondor: [], serdaigle: [], poufsouffle: [], serpentard: [] };
-  state.results.forEach(res => {
-    if (grouped[res.house]) grouped[res.house].push(res.name);
-  });
-
-  // Affichage des cartes avec les grands emblèmes
-  $("results").innerHTML = Object.entries(grouped).map(([houseKey, students]) => `
-    <div class="house-card">
-      <img src="${houses[houseKey].icon}" alt="${houses[houseKey].name}" class="house-badge-large">
-      <h3>${houses[houseKey].name}</h3>
-      <p>${students.length ? students.map(n => n.replace(/[<>&"]/g, "")).join(", ") : "—"}</p>
-    </div>
-  `).join("");
+  $("results").innerHTML = renderHouseCardsHTML("house-badge-large");
 
   showScreen("final");
   await audio.playSequence(audioFiles.end, 600);
@@ -334,7 +542,32 @@ async function showFinalResults() {
 $("restartBtn").onclick = () => {
   audio.stop();
   state.results = [];
+  updateLiveCounter();
   resetForNextStudent();
+};
+
+// Imprimer un souvenir individuel pour chaque enfant (nom, maison, emblème)
+$("printBtn").onclick = () => {
+  if (state.results.length === 0) return;
+
+  const cardsHTML = state.results.map(res => {
+    const house = houses[res.house];
+    const safeName = res.name.replace(/[<>&"]/g, "");
+    const characterSrc = getCharacterImage(res.gender, res.house);
+    return `
+      <div class="certificate">
+        <p class="certificate-eyebrow">Poudlard · Cérémonie de répartition</p>
+        <img src="${characterSrc}" alt="${house.name}" class="certificate-character">
+        <img src="${house.icon}" alt="${house.name}" class="certificate-badge">
+        <p class="certificate-name">${safeName}</p>
+        <p class="certificate-house" style="color:${house.printColor}">${house.name}</p>
+        <p class="certificate-tagline">${house.tagline}</p>
+      </div>
+    `;
+  }).join("");
+
+  $("printArea").innerHTML = `<div class="print-grid">${cardsHTML}</div>`;
+  window.print();
 };
 
 // Activer / Désactiver le son

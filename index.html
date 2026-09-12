@@ -25,6 +25,10 @@
       <p class="eyebrow">APPROCHE, JEUNE SORCIER</p>
       <h2>Comment t'appelles-tu ?</h2>
       <input id="nameInput" autocomplete="off" maxlength="24" placeholder="Ton prénom">
+      <div id="genderChoice" class="gender-choice">
+        <button type="button" class="gender-btn" data-gender="sorcier">Sorcier</button>
+        <button type="button" class="gender-btn" data-gender="sorciere">Sorcière</button>
+      </div>
       <button id="nameBtn" class="magic-btn">Entrer dans la Grande Salle</button>
     </section>
 
@@ -32,13 +36,14 @@
     <section id="question" class="screen">
       <div class="topbar"><span id="studentName"></span><span id="progress"></span></div>
       <img src="img/choixpeau.png" alt="Le Choixpeau Magique" id="hat" class="hat-img thinking">
-      <p id="hatText" class="hat-text"></p>
-      <h2 id="questionText"></h2>
+      <p id="hatText" class="hat-text" aria-live="polite"></p>
+      <h2 id="questionText" aria-live="polite"></h2>
       <div id="answers" class="answers"></div>
     </section>
 
     <!-- RÉVÉLATION -->
     <section id="reveal" class="screen">
+      <div id="confettiContainer" class="confetti-container"></div>
       <div class="reveal-glow"></div>
       <img src="img/choixpeau.png" alt="Le Choixpeau Magique" class="hat-img huge-hat">
       <p id="revealIntro" class="eyebrow">LE CHOIX EST FAIT…</p>
@@ -47,16 +52,52 @@
       <button id="nextBtn" class="magic-btn">Continuer la cérémonie</button>
     </section>
 
-    <<!-- RÉSULTAT FINAL -->
+    <!-- RÉSULTAT FINAL -->
     <section id="final" class="screen">
+      <img src="img/anniversaire-eva-8-ans.png" alt="Joyeux anniversaire Eva !" class="final-banner">
       <p class="eyebrow">LA CÉRÉMONIE EST TERMINÉE</p>
       <h2>Les maisons de Poudlard</h2>
       <div id="results" class="results"></div>
-      <button id="restartBtn" class="magic-btn">Nouvelle cérémonie</button>
+      <div class="final-actions">
+        <button id="printBtn" class="magic-btn">🖨️ Imprimer un souvenir pour chaque enfant</button>
+        <button id="restartBtn" class="text-btn">Nouvelle cérémonie</button>
+      </div>
     </section>
   </main>
 
+  <!-- ZONE D'IMPRESSION (invisible à l'écran, générée juste avant l'impression) -->
+  <div id="printArea" class="print-area"></div>
+
   <button id="soundBtn" class="sound-btn" title="Activer/désactiver la voix">🔊</button>
+
+  <!-- COMPTEUR EN DIRECT (visible dès qu'un premier élève a une maison) -->
+  <div id="liveCounter" class="live-counter hidden" role="button" tabindex="0" title="Voir le détail de la répartition">
+    <span><img src="img/gryffondor.jpg" alt="Gryffondor" class="counter-badge"> <b id="countGryffondor">0</b></span>
+    <span><img src="img/serdaigle.jpg" alt="Serdaigle" class="counter-badge"> <b id="countSerdaigle">0</b></span>
+    <span><img src="img/poufsouffle.jpg" alt="Poufsouffle" class="counter-badge"> <b id="countPoufsouffle">0</b></span>
+    <span><img src="img/serpentard.jpg" alt="Serpentard" class="counter-badge"> <b id="countSerpentard">0</b></span>
+  </div>
+
+  <!-- MODALE DE DÉTAIL DE LA RÉPARTITION EN COURS -->
+  <div id="liveDetailsModal" class="modal-overlay hidden">
+    <div class="modal-box modal-box-wide">
+      <p class="eyebrow">RÉPARTITION EN COURS</p>
+      <div id="liveDetailsGrid" class="results"></div>
+      <button id="liveDetailsCloseBtn" class="magic-btn">Fermer</button>
+    </div>
+  </div>
+
+  <!-- MODALE DE CONFIRMATION -->
+  <div id="confirmModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <p id="modalText" class="modal-text"></p>
+      <div class="modal-actions">
+        <button id="modalYesBtn" class="magic-btn">Oui, sorcier suivant</button>
+        <button id="modalNoBtn" class="text-btn">Voir la cérémonie finale</button>
+      </div>
+    </div>
+  </div>
+
   <script src="app.js"></script>
 </body>
 </html>
