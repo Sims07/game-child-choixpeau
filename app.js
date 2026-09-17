@@ -128,7 +128,9 @@ const audioFiles = {
   after: "22_bienvenue_maison.mp3",
   next: ["23_suivant.mp3", "24_approche_suivant.mp3"],
   last: "25_dernier.mp3",
-  end: ["26_fin.mp3", "27_felicitations.mp3", "28_a_bientot.mp3"]
+  end: ["26_fin.mp3", "27_felicitations.mp3", "28_a_bientot.mp3"],
+  treasureHunt: ["chasse/01_annonce.mp3", "chasse/02_regles.mp3", "chasse/03_bonne_chance.mp3"],
+  treasureOpen: ["chasse/04_ouverture.mp3"]
 };
 
 /* ==========================================================================
@@ -345,11 +347,36 @@ function launchConfetti(color) {
   setTimeout(() => { container.innerHTML = ""; }, 3600);
 }
 
-function showScreen(screenId) {
+let screenHistory = [];
+let currentScreenId = null;
+
+function showScreen(screenId, options = {}) {
+  const { recordHistory = true } = options;
+
+  if (recordHistory && currentScreenId && currentScreenId !== screenId) {
+    screenHistory.push(currentScreenId);
+  }
+  currentScreenId = screenId;
+  updateBackButton();
+
   document.querySelectorAll(".screen").forEach(el => el.classList.remove("active"));
   const target = $(screenId);
   if (target) target.classList.add("active");
 }
+
+// Revient à l'écran précédemment affiché (bouton "← Retour", global à toute l'app)
+function goBack() {
+  if (screenHistory.length === 0) return;
+  const previous = screenHistory.pop();
+  audio.stop();
+  showScreen(previous, { recordHistory: false });
+}
+
+function updateBackButton() {
+  $("backBtn").classList.toggle("hidden", screenHistory.length === 0);
+}
+
+$("backBtn").onclick = goBack;
 
 /* --- DÉROULEMENT DU JEU --- */
 
@@ -397,9 +424,8 @@ document.querySelectorAll(".gender-btn").forEach(btn => {
 // 3. Affichage d'une question
 function startQuestion() {
   const totalSteps = state.selectedQuestions.length + 1; // +1 pour la question de vœu
-  const q = state.questionIndex < state.selectedQuestions.length
-    ? state.selectedQuestions[state.questionIndex]
-    : wishQuestion;
+  const isWishQuestion = state.questionIndex >= state.selectedQuestions.length;
+  const q = isWishQuestion ? wishQuestion : state.selectedQuestions[state.questionIndex];
 
   $("studentName").textContent = state.name;
   $("progress").textContent = `QUESTION ${state.questionIndex + 1} / ${totalSteps}`;
@@ -546,22 +572,39 @@ $("restartBtn").onclick = () => {
   resetForNextStudent();
 };
 
-// Imprimer un souvenir individuel pour chaque enfant (nom, maison, emblème)
+// Imprimer un diplôme individuel pour chaque enfant,
+// avec une zone dédiée au coup de tampon du sceau et une ligne de signature
 $("printBtn").onclick = () => {
   if (state.results.length === 0) return;
 
   const cardsHTML = state.results.map(res => {
     const house = houses[res.house];
     const safeName = res.name.replace(/[<>&"]/g, "");
-    const characterSrc = getCharacterImage(res.gender, res.house);
+    const titre = res.gender === "sorciere" ? "Diplôme de Sorcière" : "Diplôme de Sorcier";
+    const statut = res.gender === "sorciere" ? "officiellement sorcière" : "officiellement sorcier";
+
     return `
       <div class="certificate">
-        <p class="certificate-eyebrow">Poudlard · Cérémonie de répartition</p>
-        <img src="${characterSrc}" alt="${house.name}" class="certificate-character">
         <img src="${house.icon}" alt="${house.name}" class="certificate-badge">
+        <p class="certificate-kicker">Poudlard · École de Sorcellerie</p>
+        <h1 class="certificate-title">${titre}</h1>
+        <p class="certificate-subtitle">Cérémonie de répartition</p>
+
+        <p class="certificate-awarded-to">Ce diplôme est décerné à</p>
         <p class="certificate-name">${safeName}</p>
+        <p class="certificate-body">reconnu(e) ${statut} de la maison</p>
         <p class="certificate-house" style="color:${house.printColor}">${house.name}</p>
         <p class="certificate-tagline">${house.tagline}</p>
+
+        <div class="certificate-signatures">
+          <div class="certificate-sign-block">
+            <div class="certificate-seal"><span>Sceau de la maison</span></div>
+          </div>
+          <div class="certificate-sign-block">
+            <div class="certificate-sign-line"></div>
+            <p class="certificate-sign-label">Signature</p>
+          </div>
+        </div>
       </div>
     `;
   }).join("");
@@ -577,4 +620,93 @@ $("soundBtn").onclick = () => {
   if (!audio.soundEnabled) {
     audio.stop();
   }
+};
+
+// Lancer l'écran de la chasse au trésor : le Choixpeau explique les règles
+$("treasureHuntBtn").onclick = () => {
+  audio.stop();
+  showScreen("treasureHunt");
+  audio.playSequence(audioFiles.treasureHunt, 600);
+};
+
+// ==========================================================================
+// CADENAS DU TRÉSOR (3 chiffres)
+// ==========================================================================
+const LOCK_CODE_STORAGE_KEY = "choixpeau-lock-code";
+let lockDigits = [0, 0, 0];
+
+// Le code est sauvegardé sur cet appareil (localStorage) pour ne pas avoir
+// à le ressaisir à chaque lancement de la cérémonie.
+function getLockCode() {
+  const stored = localStorage.getItem(LOCK_CODE_STORAGE_KEY);
+  return stored && /^\d{3}$/.test(stored) ? stored : "000";
+}
+
+function setLockCode(code) {
+  localStorage.setItem(LOCK_CODE_STORAGE_KEY, code);
+}
+
+function renderLockDigits() {
+  lockDigits.forEach((val, i) => {
+    $(`lockDigit${i}`).textContent = val;
+  });
+}
+
+document.querySelectorAll(".lock-arrow").forEach(btn => {
+  btn.addEventListener("click", () => {
+    const i = Number(btn.dataset.index);
+    const delta = btn.classList.contains("lock-up") ? 1 : -1;
+    lockDigits[i] = (lockDigits[i] + delta + 10) % 10;
+    renderLockDigits();
+    $("lockFeedback").textContent = "";
+  });
+});
+
+// "C'est parti !" : ouvre le cadenas à 3 chiffres, remis à zéro
+$("treasureHuntStartBtn").onclick = () => {
+  audio.stop();
+  lockDigits = [0, 0, 0];
+  renderLockDigits();
+  $("lockFeedback").textContent = "";
+  showScreen("lockScreen");
+};
+
+$("lockValidateBtn").onclick = () => {
+  const entered = lockDigits.join("");
+  const lockEl = document.querySelector(".lock");
+
+  if (entered === getLockCode()) {
+    $("lockFeedback").textContent = "";
+    showScreen("congrats");
+    launchConfetti("#f6df9b");
+    audio.playSequence(audioFiles.treasureOpen, 0);
+  } else {
+    $("lockFeedback").textContent = "Ce n'est pas le bon code... essayez encore !";
+    lockEl.classList.remove("shake");
+    void lockEl.offsetWidth; // force le redémarrage de l'animation
+    lockEl.classList.add("shake");
+  }
+};
+
+// Réglage du code (accès discret, réservé aux adultes)
+$("lockSettingsBtn").onclick = () => {
+  $("lockSettingsInput").value = getLockCode();
+  $("lockSettingsModal").classList.remove("hidden");
+};
+$("lockSettingsCloseBtn").onclick = () => $("lockSettingsModal").classList.add("hidden");
+$("lockSettingsInput").addEventListener("input", () => {
+  $("lockSettingsInput").value = $("lockSettingsInput").value.replace(/\D/g, "").slice(0, 3);
+});
+$("lockSettingsSaveBtn").onclick = () => {
+  const val = $("lockSettingsInput").value.trim();
+  if (!/^\d{3}$/.test(val)) {
+    $("lockSettingsInput").focus();
+    return;
+  }
+  setLockCode(val);
+  $("lockSettingsModal").classList.add("hidden");
+};
+
+$("congratsRestartBtn").onclick = () => {
+  showScreen("welcome");
 };

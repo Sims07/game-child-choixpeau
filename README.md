@@ -12,7 +12,8 @@ Une application web interactive et sonore qui récrée la célèbre cérémonie 
 * 👥 **Gestion multi-élèves** : Possibilité de faire passer plusieurs sorciers à la suite (via une modale stylée) et d'afficher le récapitulatif final de la promotion.
 * 🗣️ **Questions lues à voix haute** : Chaque question est narrée automatiquement dès son affichage (fichiers audio à déposer dans `audio/questions/`).
 * 🧙 **Personnages sorcier/sorcière** : L'élève choisit son avatar (sorcier ou sorcière) avant la cérémonie ; le personnage correspondant à sa maison apparaît ensuite lors de la révélation, dans le récapitulatif et sur le certificat imprimé.
-* 🖨️ **Souvenirs imprimables** : Un bouton sur l'écran final génère un certificat individuel par enfant (nom, personnage, emblème, maison) prêt à imprimer et à emporter.
+* 🗺️ **Chasse au trésor** : Un bouton sur l'écran final ouvre un dernier écran où le Choixpeau explique les règles (fichiers audio à déposer dans `audio/chasse/`), avant de lancer l'activité physique.
+* 🎓 **Diplômes imprimables** : Un bouton sur l'écran final génère un diplôme de sorcellerie individuel par enfant (nom, maison, tagline), avec une zone dédiée au sceau (à tamponner) et une ligne de signature (à la plume) — prêt à imprimer et à emporter.
 * 📱 **Interface responsive** : Thème sombre et magique adapté aux ordinateurs, tablettes et mobiles, correctement centré sur tous les écrans.
 
 ---
@@ -65,3 +66,23 @@ Chaque question du jeu est lue automatiquement dès qu'elle s'affiche, si le fic
 | `q10-voeu.mp3` | Le Choixpeau te laisse le choix. Dans quelle maison aimerais-tu aller ? |
 
 Seul le texte de la question doit être lu (pas les 4 réponses).
+
+### Chasse au trésor dans `audio/chasse/`
+
+Depuis l'écran final, le bouton « 🗺️ Lancer la chasse au trésor » ouvre un nouvel écran et joue ces 3 fichiers à la suite :
+
+| Fichier | Rôle |
+|---|---|
+| `01_annonce.mp3` | Annonce du début de la chasse au trésor |
+| `02_regles.mp3` | « Deux équipes, une seule quête : résolvez vos épreuves, puis unissez vos réponses pour révéler le code du coffre au trésor ! » |
+| `03_bonne_chance.mp3` | Message de bonne chance avant de lancer les enfants |
+
+Le texte affiché à l'écran est désormais le texte définitif des règles (déjà mis à jour dans `index.html`, élément `#treasureHuntText`).
+
+### Image du trésor dans `img/`
+
+Une fois le bon code saisi dans le cadenas, l'écran de félicitations affiche :
+
+```
+img/tresor-magique-legami.png
+```

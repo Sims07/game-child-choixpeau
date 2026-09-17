@@ -59,9 +59,59 @@
       <h2>Les maisons de Poudlard</h2>
       <div id="results" class="results"></div>
       <div class="final-actions">
-        <button id="printBtn" class="magic-btn">🖨️ Imprimer un souvenir pour chaque enfant</button>
+        <div class="final-actions-primary">
+          <button id="printBtn" class="magic-btn">🎓 Imprimer les diplômes</button>
+          <button id="treasureHuntBtn" class="magic-btn">🗺️ Lancer la chasse au trésor</button>
+        </div>
         <button id="restartBtn" class="text-btn">Nouvelle cérémonie</button>
       </div>
+    </section>
+
+    <!-- CHASSE AU TRÉSOR -->
+    <section id="treasureHunt" class="screen">
+      <img src="img/choixpeau.png" alt="Le Choixpeau Magique" class="hat-img talking">
+      <p class="eyebrow">UNE DERNIÈRE ÉPREUVE VOUS ATTEND</p>
+      <h1>La chasse au <span>trésor</span></h1>
+      <p id="treasureHuntText" class="intro">Deux équipes, une seule quête : résolvez vos épreuves, puis unissez vos réponses pour révéler le code du coffre au trésor !</p>
+      <button id="treasureHuntStartBtn" class="magic-btn">C'est parti !</button>
+    </section>
+
+    <!-- CADENAS DU TRÉSOR -->
+    <section id="lockScreen" class="screen">
+      <img src="img/choixpeau.png" alt="Le Choixpeau Magique" class="hat-img small-hat">
+      <p class="eyebrow">LE TRÉSOR EST VERROUILLÉ</p>
+      <h2>Entrez le code secret trouvé pendant la chasse</h2>
+
+      <div class="lock">
+        <div class="lock-digit">
+          <button type="button" class="lock-arrow lock-up" data-index="0">▲</button>
+          <div class="lock-value" id="lockDigit0">0</div>
+          <button type="button" class="lock-arrow lock-down" data-index="0">▼</button>
+        </div>
+        <div class="lock-digit">
+          <button type="button" class="lock-arrow lock-up" data-index="1">▲</button>
+          <div class="lock-value" id="lockDigit1">0</div>
+          <button type="button" class="lock-arrow lock-down" data-index="1">▼</button>
+        </div>
+        <div class="lock-digit">
+          <button type="button" class="lock-arrow lock-up" data-index="2">▲</button>
+          <div class="lock-value" id="lockDigit2">0</div>
+          <button type="button" class="lock-arrow lock-down" data-index="2">▼</button>
+        </div>
+      </div>
+
+      <p id="lockFeedback" class="lock-feedback" aria-live="polite"></p>
+      <button id="lockValidateBtn" class="magic-btn">Ouvrir le trésor</button>
+    </section>
+
+    <!-- FÉLICITATIONS -->
+    <section id="congrats" class="screen">
+      <div id="congratsConfetti" class="confetti-container"></div>
+      <img src="img/tresor-magique-legami.png" alt="Le trésor magique" class="treasure-img">
+      <p class="eyebrow">LE TRÉSOR EST OUVERT</p>
+      <h1>Bravo, <span>aventuriers</span> !</h1>
+      <p class="intro">Vous avez trouvé le bon code et déverrouillé le trésor de Poudlard !</p>
+      <button id="congratsRestartBtn" class="magic-btn">Terminer</button>
     </section>
   </main>
 
@@ -69,6 +119,8 @@
   <div id="printArea" class="print-area"></div>
 
   <button id="soundBtn" class="sound-btn" title="Activer/désactiver la voix">🔊</button>
+  <button id="lockSettingsBtn" class="lock-settings-btn" title="Paramétrer le code du cadenas (adultes)">⚙</button>
+  <button id="backBtn" class="back-btn hidden" title="Revenir à l'écran précédent">← Retour</button>
 
   <!-- COMPTEUR EN DIRECT (visible dès qu'un premier élève a une maison) -->
   <div id="liveCounter" class="live-counter hidden" role="button" tabindex="0" title="Voir le détail de la répartition">
@@ -84,6 +136,19 @@
       <p class="eyebrow">RÉPARTITION EN COURS</p>
       <div id="liveDetailsGrid" class="results"></div>
       <button id="liveDetailsCloseBtn" class="magic-btn">Fermer</button>
+    </div>
+  </div>
+
+  <!-- MODALE DE RÉGLAGE DU CODE DU CADENAS (ADULTES) -->
+  <div id="lockSettingsModal" class="modal-overlay hidden">
+    <div class="modal-box">
+      <p class="eyebrow">Réglage du code (adultes)</p>
+      <p class="modal-text">Choisis le code à 3 chiffres que les enfants devront trouver pendant la chasse au trésor.</p>
+      <input id="lockSettingsInput" type="text" inputmode="numeric" maxlength="3" placeholder="Ex : 427" class="lock-settings-input">
+      <div class="modal-actions">
+        <button id="lockSettingsSaveBtn" class="magic-btn">Enregistrer</button>
+        <button id="lockSettingsCloseBtn" class="text-btn">Annuler</button>
+      </div>
     </div>
   </div>
 
