@@ -630,25 +630,28 @@ $("treasureHuntBtn").onclick = () => {
 };
 
 // ==========================================================================
-// CADENAS DU TRÉSOR (3 chiffres)
+// CADENAS DU TRÉSOR (4 caractères, chiffres et/ou lettres)
 // ==========================================================================
 const LOCK_CODE_STORAGE_KEY = "choixpeau-lock-code";
-let lockDigits = [0, 0, 0];
+const LOCK_CHARSET = "0123456789ABCDEFGHIJKLMNOPQRSTUVWXYZ"; // ce que parcourent les flèches ▲▼
+const LOCK_LENGTH = 4;
+let lockChars = Array(LOCK_LENGTH).fill(0); // indices dans LOCK_CHARSET
 
 // Le code est sauvegardé sur cet appareil (localStorage) pour ne pas avoir
 // à le ressaisir à chaque lancement de la cérémonie.
 function getLockCode() {
   const stored = localStorage.getItem(LOCK_CODE_STORAGE_KEY);
-  return stored && /^\d{3}$/.test(stored) ? stored : "000";
+  const pattern = new RegExp(`^[0-9A-Z]{${LOCK_LENGTH}}$`);
+  return stored && pattern.test(stored) ? stored : "0".repeat(LOCK_LENGTH);
 }
 
 function setLockCode(code) {
   localStorage.setItem(LOCK_CODE_STORAGE_KEY, code);
 }
 
-function renderLockDigits() {
-  lockDigits.forEach((val, i) => {
-    $(`lockDigit${i}`).textContent = val;
+function renderLockChars() {
+  lockChars.forEach((idx, i) => {
+    $(`lockDigit${i}`).textContent = LOCK_CHARSET[idx];
   });
 }
 
@@ -656,23 +659,23 @@ document.querySelectorAll(".lock-arrow").forEach(btn => {
   btn.addEventListener("click", () => {
     const i = Number(btn.dataset.index);
     const delta = btn.classList.contains("lock-up") ? 1 : -1;
-    lockDigits[i] = (lockDigits[i] + delta + 10) % 10;
-    renderLockDigits();
+    lockChars[i] = (lockChars[i] + delta + LOCK_CHARSET.length) % LOCK_CHARSET.length;
+    renderLockChars();
     $("lockFeedback").textContent = "";
   });
 });
 
-// "C'est parti !" : ouvre le cadenas à 3 chiffres, remis à zéro
+// "C'est parti !" : ouvre le cadenas à 4 caractères, remis à zéro
 $("treasureHuntStartBtn").onclick = () => {
   audio.stop();
-  lockDigits = [0, 0, 0];
-  renderLockDigits();
+  lockChars = Array(LOCK_LENGTH).fill(0);
+  renderLockChars();
   $("lockFeedback").textContent = "";
   showScreen("lockScreen");
 };
 
 $("lockValidateBtn").onclick = () => {
-  const entered = lockDigits.join("");
+  const entered = lockChars.map(idx => LOCK_CHARSET[idx]).join("");
   const lockEl = document.querySelector(".lock");
 
   if (entered === getLockCode()) {
@@ -695,11 +698,12 @@ $("lockSettingsBtn").onclick = () => {
 };
 $("lockSettingsCloseBtn").onclick = () => $("lockSettingsModal").classList.add("hidden");
 $("lockSettingsInput").addEventListener("input", () => {
-  $("lockSettingsInput").value = $("lockSettingsInput").value.replace(/\D/g, "").slice(0, 3);
+  $("lockSettingsInput").value = $("lockSettingsInput").value.toUpperCase().replace(/[^0-9A-Z]/g, "").slice(0, LOCK_LENGTH);
 });
 $("lockSettingsSaveBtn").onclick = () => {
   const val = $("lockSettingsInput").value.trim();
-  if (!/^\d{3}$/.test(val)) {
+  const pattern = new RegExp(`^[0-9A-Z]{${LOCK_LENGTH}}$`);
+  if (!pattern.test(val)) {
     $("lockSettingsInput").focus();
     return;
   }

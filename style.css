@@ -177,7 +177,7 @@ input:focus{border-color:var(--gold);box-shadow:0 0 0 3px rgba(217,184,108,.08)}
 .lock-settings-btn{position:fixed;bottom:16px;right:16px;background:rgba(12,16,35,.75);border:1px solid rgba(217,184,108,.3);border-radius:50%;width:38px;height:38px;color:#aaa4b6;font-size:1.15rem;cursor:pointer;opacity:.55;transition:.2s;z-index:45}
 .lock-settings-btn:hover{opacity:1;color:var(--gold);border-color:var(--gold)}
 
-.back-btn{position:fixed;top:16px;left:16px;background:rgba(12,16,35,.75);border:1px solid rgba(217,184,108,.3);border-radius:999px;padding:8px 18px;color:#ccc;font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.03em;cursor:pointer;z-index:45;transition:.2s}
+.back-btn{position:fixed;top:16px;right:16px;background:rgba(12,16,35,.75);border:1px solid rgba(217,184,108,.3);border-radius:999px;padding:8px 18px;color:#ccc;font-family:Cinzel,serif;font-size:.78rem;letter-spacing:.03em;cursor:pointer;z-index:45;transition:.2s}
 .back-btn:hover{border-color:var(--gold);color:var(--gold2);background:rgba(217,184,108,.1)}
 .back-btn.hidden{display:none}
 .lock-settings-input{width:min(200px,100%);text-align:center;letter-spacing:.4em;font-size:1.3rem}
